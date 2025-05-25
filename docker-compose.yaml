@@ -1,44 +1,29 @@
-
 services:
 
-  database:
-    image: mysql:8.0
-    restart: always
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root 
-      MYSQL_DATABASE: Harrii
+  webapp:
+    image: harry530/crud:1.4
     ports:
-      - "3306:3306"
+      - 8080:80
+    
+  db:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=Harrii  
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=password
+    ports:
+      - 3306:3306
     volumes:
-      - mysql_data:/var/lib/mysql  # Persist MySQL Data
+      - data:/var/lib/mysql/
   
-  phpmyadmin:
+  dbui:
     image: phpmyadmin/phpmyadmin
-    container_name: phpHari
-    restart: always
     ports:
-      - "8081:80"
+      - 8081:80
     environment:
-      PMA_HOST: database
-      MYSQL_ROOT_PASSWORD: root
-    depends_on:
-      - database
-
-  webserver:
-    image: php:8.0-apache
-    container_name: php-apache
-    restart: always
-    ports:
-      - "8080:80"
-    volumes:
-      - .:/var/www/html  # Mount local files to the container
-    depends_on:
-      - database
-    environment:
-      - PHP_EXTENSION=mysqli  # Ensures MySQL support in PHP
-    command: >
-      bash -c "docker-php-ext-install mysqli && apache2-foreground"
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password
 
 volumes:
-  mysql_data:  # Define volume for MySQL persistence
+    data:

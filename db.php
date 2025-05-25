@@ -1,8 +1,10 @@
 <?php
-$host = getenv('DB_HOST');
-$user = getenv('DB_USER');
-$password = getenv('DB_PASSWORD');
-$dbname = getenv('DB_NAME');
+$env = parse_ini_file(__DIR__ . '/.env');
+
+$host = $env['DB_HOST'];
+$user = $env['DB_USER'];
+$password = $env['DB_PASSWORD'];
+$dbname = $env['DB_NAME'];
 
 $conn = new mysqli($host, $user, $password, $dbname);
 
